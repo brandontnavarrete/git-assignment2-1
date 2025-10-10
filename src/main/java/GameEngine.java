@@ -1,3 +1,5 @@
+import java.util.concurrent.ThreadLocalRandom;
+
 public class GameEngine {
     private static final int MAX_ATTEMPTS = 10;
 
@@ -20,7 +22,7 @@ public class GameEngine {
     }
 
     public GuessResult makeGuess(int guess) {
-        // Check if user wants to quit (negative number)
+        // 
         if (guess < 0) {
             userQuit = true;
             return new GuessResult(false, "Exiting game...", attempts);
@@ -31,15 +33,30 @@ public class GameEngine {
         if (guess == target) {
             gameWon = true;
             return new GuessResult(true, "Correct! You guessed it in " + attempts + " attempts.", attempts);
-        } else if (guess < target) {
-            return new GuessResult(false, "Too low! Try a higher number.", attempts);
-        } else {
-            return new GuessResult(false, "Too high! Try a lower number.", attempts);
         }
+
+        // After a wrong guess, check attempts cap
+        if (attempts >= MAX_ATTEMPTS) {
+            gameOver = true;
+            return new GuessResult(false,
+                "Game Over! You've used all " + MAX_ATTEMPTS + " attempts. The number was " + target + ".",
+                attempts);
+        }
+
+        // Still have attempts left; return directional feedback + remaining attempts
+        int remaining = MAX_ATTEMPTS - attempts;
+        GuessResult result;
+        if (guess < target) {
+            result = new GuessResult(false, "Too low! Try a higher number.", attempts);
+        } else {
+            result = new GuessResult(false, "Too high! Try a lower number.", attempts);
+        }
+        result.setRemainingAttempts(remaining);
+        return result;
     }
 
     public void reset() {
-        target = Utils.randomInt(min, max);
+        target = ThreadLocalRandom.current().nextInt(min, max + 1);
         attempts = 0;
         gameWon = false;
         userQuit = false;
