@@ -5,13 +5,19 @@ public class GameEngine {
     private int attempts;
     private boolean gameWon;
     private boolean userQuit;
+    private boolean hintsEnabled;
+
 
     public GameEngine(int min, int max) {
         this.min = min;
         this.max = max;
         this.attempts = 0;
         this.gameWon = false;
+
         this.userQuit = false;
+
+        this.hintsEnabled = true;
+
         reset();
     }
 
