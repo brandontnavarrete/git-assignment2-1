@@ -133,6 +133,7 @@ public class GameEngineTest {
         }
         engine.reset();
         assertFalse(engine.isGameOver());
+    }
 
     public void testHintVeryClose() {
         engine.setTarget(50);
@@ -199,7 +200,7 @@ public class GameEngineTest {
         for (int i = 0; i < 3; i++) {
             engine.makeGuess(60);
         }
-        GuessResult result = engine.makeGuess();
+        GuessResult result = engine.makeGuess(55);
         assertFalse(result.getHint().isEmpty());
     }
 }

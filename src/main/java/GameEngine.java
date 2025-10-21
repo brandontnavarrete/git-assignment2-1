@@ -14,9 +14,6 @@ public class GameEngine {
 
     private boolean hintsEnabled;
 
-    private static final int MAX_ATTEMPTS = 10;
-    private boolean gameOver;   
-
     public GameEngine(int min, int max) {
         this.min = min;
         this.max = max;
@@ -57,20 +54,12 @@ public class GameEngine {
         // Still have attempts left; return directional feedback + remaining attempts
         int remaining = MAX_ATTEMPTS - attempts;
 
-        GuessResult result;
-        if (guess < target) {
-            result = new GuessResult(false, "Too low! Try a higher number.", attempts);
-        } else {
-            result = new GuessResult(false, "Too high! Try a lower number.", attempts);
-        }
-        result.setRemainingAttempts(remaining);
-
         // Base feedback message
         String message = (guess < target)
                 ? "Too low! Try a higher number."
                 : "Too high! Try a lower number.";
 
-        // --- HINT logic (begins on 3rd attempt) ---
+        // --- HNT logic (begins on 3rd attempt) ---
         String hint = "";
         if (hintsEnabled && attempts >= 3) {
             int diff = Math.abs(target - guess);
@@ -86,9 +75,8 @@ public class GameEngine {
 
         // Build result with remaining attempts and hint field populated
         GuessResult result = new GuessResult(false, message, attempts);
-        result.setRemainingAttempts(remaining); // keep remaining-attempts behavior
-        result.setHint(hint);                   // so testHintFieldAccessor() sees a non-empty hint
-
+        result.setRemainingAttempts(remaining);
+        result.setHint(hint);                   // used by tests
         return result;
     }
 
@@ -159,13 +147,5 @@ public class GameEngine {
     protected int getTarget() {
         return target;
     }
-
-    public boolean isGameOver() { 
-        return gameOver;
-    }
     
-    public int getMaxAttempts() { 
-        return MAX_ATTEMPTS;
-    }
-
 }
